@@ -1,0 +1,351 @@
+openapi: 3.0.3
+info:
+  title: Personal task management app
+  version: '1.0'
+  contact:
+    name: Konstantin Zubov
+    email: zubovdev@gmail.com
+  description: Personal task management app
+servers:
+  - url: 'http://localhost:8080/api'
+paths:
+  /users:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      operationId: get-users
+    parameters: []
+    post:
+      summary: ''
+      operationId: post-users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 32
+                firstName:
+                  type: string
+                  maxLength: 255
+                lastName:
+                  type: string
+                  maxLength: 255
+                type:
+                  type: integer
+              required:
+                - email
+                - password
+                - type
+  '/users/{id}':
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      operationId: get-users-id
+      parameters: []
+      description: ''
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+        description: User ID
+    patch:
+      summary: ''
+      operationId: patch-users-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  maxLength: 255
+                  format: email
+                firstName:
+                  type: string
+                  maxLength: 255
+                lastName:
+                  type: string
+                  maxLength: 255
+    delete:
+      summary: ''
+      operationId: delete-users-id
+      responses:
+        '204':
+          description: No Content
+  /tasks:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+      operationId: get-tasks
+    post:
+      summary: ''
+      operationId: post-tasks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                description:
+                  type: string
+                  maxLength: 4096
+                estimatedTime:
+                  type: integer
+                  description: Time in seconds
+                userId:
+                  type: integer
+                dueDate:
+                  type: integer
+                  description: Unix date
+              required:
+                - title
+                - description
+  '/tasks/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+      operationId: get-tasks-id
+    patch:
+      summary: ''
+      operationId: patch-tasks-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                description:
+                  type: string
+                  maxLength: 4096
+                estimatedTime:
+                  type: integer
+                  description: Time in seconds
+                status:
+                  type: integer
+                dueDate:
+                  type: integer
+                  description: Unix time
+    delete:
+      summary: ''
+      operationId: delete-tasks-id
+      responses:
+        '204':
+          description: No Content
+  '/tasks/{id}/assign':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-tasks-id-assign
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+              required:
+                - userId
+  /auth/login:
+    parameters: []
+    post:
+      summary: ''
+      operationId: post-auth-login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: API key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 32
+              required:
+                - email
+                - password
+  /auth/logout:
+    post:
+      summary: ''
+      operationId: post-auth-logout
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        firstName:
+          type: string
+          maxLength: 255
+        lastName:
+          type: string
+          maxLength: 255
+        type:
+          type: integer
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+    Task:
+      title: Task
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        estimatedTime:
+          type: integer
+
+          format: int64
+        userId:
+          type: integer
+        status:
+          type: integer
+  securitySchemes:
+    Bearer token:
+      name: Authorization
+      type: apiKey
+      in: header

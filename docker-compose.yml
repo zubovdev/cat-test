@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13.3
+    container_name: cat_db
+    restart: always
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./_docker_volume/db:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5435:5432"
+
+networks:
+  cat_test:
